@@ -1,0 +1,14 @@
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import pg from 'pg';
+const app=express(),port=Number(process.env.PORT||4000);
+const pool=process.env.DATABASE_URL?new pg.Pool({connectionString:process.env.DATABASE_URL,ssl:process.env.NODE_ENV==='production'?{rejectUnauthorized:false}:false}):null;
+app.use(cors({origin:process.env.CLIENT_ORIGIN||'http://localhost:5173'}));
+app.use(express.json({limit:'1mb'}));
+app.get('/api/v1/health',async(_req,res)=>{let database='not_configured';if(pool){try{await pool.query('SELECT 1');database='connected'}catch{database='unavailable'}}res.json({status:'ok',service:'airwatch-api',database,timestamp:new Date().toISOString()})});
+app.get('/api/v1/stations',async(_req,res)=>{if(!pool)return res.json({data:[],meta:{message:'Database not configured',count:0}});try{const q=await pool.query('SELECT id,name,city,latitude,longitude,source FROM stations WHERE is_active=TRUE ORDER BY name');res.json({data:q.rows,meta:{count:q.rowCount}})}catch(e){console.error(e.message);res.status(500).json({error:'STATIONS_QUERY_FAILED'})}});
+app.get('/api/v1/measurements/latest',async(_req,res)=>{if(!pool)return res.json({data:[],meta:{message:'Database not configured',count:0,generatedAt:null}});try{const q=await pool.query(`SELECT DISTINCT ON(m.station_id,m.parameter) m.id,m.station_id AS "stationId",m.parameter,m.value,m.unit,m.measured_at AS "measuredAt",m.source FROM measurements m JOIN stations s ON s.id=m.station_id WHERE s.is_active=TRUE ORDER BY m.station_id,m.parameter,m.measured_at DESC`);res.json({data:q.rows,meta:{count:q.rowCount,generatedAt:new Date().toISOString()}})}catch(e){console.error(e.message);res.status(500).json({error:'MEASUREMENTS_QUERY_FAILED'})}});
+app.use((req,res)=>res.status(404).json({error:'NOT_FOUND',path:req.path}));
+app.listen(port,()=>console.log('AirWatch API listening on '+port));
+process.on('SIGTERM',async()=>{if(pool)await pool.end();process.exit(0)});
