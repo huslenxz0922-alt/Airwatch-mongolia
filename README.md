@@ -1,42 +1,62 @@
-# AirWatch Mongolia
+# AirWatch Mongolia 🇲🇳
 
-Монгол Улсын агаарын чанарын мэдээллийг нэг дороос харах, хянах, шинжлэх веб платформ.
+**Монгол Улсын агаарын чанарын мэдээллийг нэг дороос хянах нээлттэй веб платформ.**
 
-> **Төслийн төлөв:** Суурь хөгжүүлэлтийн шат. Баталгаажаагүй эсвэл жишээ өгөгдлийг бодит хэмжилт мэт харуулахгүй.
+AirWatch Mongolia нь хэмжилтийн эх сурвалж, байршил, хугацаа, нэгж болон өгөгдлийн шинэчлэлтийг ил тод харуулах зорилготой.
 
-## Зорилго
+> **Өгөгдлийн зарчим:** Баталгаажсан provider холбогдоогүй үед систем бодит хэмжилт зохиомлоор харуулахгүй. Хоосон төлөвийг ил тод үзүүлнэ.
 
-- Агаарын чанарын хэмжилтийг станц, байршил, хугацаагаар харах
-- PM2.5, PM10 болон боломжтой бусад бохирдуулагчийн мэдээллийг харуулах
-- Хэмжилтийн эх сурвалж, нэгж, цагийн тэмдэглэгээ, өгөгдлийн шинэ эсэхийг ил тод үзүүлэх
-- Өгөгдөлд тулгуурласан график, газрын зураг, тайлан гаргах
+## Features
+- Агаарын чанарын dashboard (PM2.5, PM10, NO₂, SO₂)
+- OpenStreetMap дээр станцын байршил харах
+- Express REST API
+- PostgreSQL + PostGIS schema
+- Source, unit, timestamp хадгалах өгөгдлийн загвар
+- GitHub Actions build/typecheck workflow
 
-## Технологийн төлөвлөгөө
+## Tech stack
+React · TypeScript · Vite · Leaflet · Node.js · Express · PostgreSQL · PostGIS
 
-- Frontend: React, TypeScript, Vite
-- Backend: Node.js, Express
-- Database: PostgreSQL, PostGIS
-- Map: Leaflet, OpenStreetMap
-- Charts: Recharts
+## Run locally
+Requirements: Node.js 20+ and npm.
 
-## Өгөгдлийн эх сурвалж
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
 
-- Монголын агаарын чанарын мэдээлэл: https://agaar.gov.mn/
-- OpenAQ API: https://docs.openaq.org/
+Windows PowerShell:
+```powershell
+Copy-Item .env.example .env
+npm install
+npm run dev
+```
 
-Эх сурвалж бүрийн API боломж, хамрах хүрээ, ашиглалтын нөхцөлийг шалгасны дараа интеграц хийнэ.
+Web: http://localhost:5173  
+API health: http://localhost:4000/api/v1/health
 
-## Өгөгдлийн бүрэн бүтэн байдлын зарчим
+## Data providers
+- Монгол Улсын агаарын чанарын мэдээллийн портал: https://agaar.gov.mn/
+- OpenAQ API documentation: https://docs.openaq.org/
 
-1. Demo өгөгдлийг бодит хэмжилт гэж үзүүлэхгүй.
-2. Хэмжилт бүр эх сурвалж, нэгж, хэмжсэн цагтай байна.
-3. Хуучирсан өгөгдлийг хуучирсан гэж тэмдэглэнэ.
-4. Өгөгдөл байхгүй үед зохиомол утга харуулахгүй.
+Provider integration хийхийн өмнө API endpoint, эрх, хамрах хүрээ, лиценз болон attribution нөхцөлийг шалгана. Одоогоор provider integration хийгдээгүй.
 
-## Хөгжүүлэлт
+## Project structure
+- src/ — React frontend
+- server/ — Express API
+- database/ — PostgreSQL/PostGIS schema
+- docs/ — architecture and API docs
+- .github/workflows/ — CI pipeline
 
-Эхний хувилбарын frontend/backend код болон суулгах заавар нэмэгдэх явцад энэ README-г шинэчилнэ.
+## Status
+Энэ нь хөгжүүлэлтийн эхний суурь хувилбар. Dashboard, API болон database scaffold нэмэгдсэн. Баталгаажсан бодит өгөгдлийн интеграци, хэрэглэгчийн бүртгэл, түүхэн график болон production deployment дараагийн шатанд хийгдэнэ.
+
+## Scripts
+- npm run dev — frontend + backend
+- npm run build — production frontend build
+- npm run typecheck — TypeScript шалгалт
+- npm run start:server — API server
 
 ## License
-
-Одоогоор лицензийн нөхцөлийг эцэслэн сонгоогүй.
+MIT. See [LICENSE](LICENSE).
